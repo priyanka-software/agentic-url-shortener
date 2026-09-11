@@ -1,0 +1,2 @@
+package com.assessment.shortener.agentic;
+public enum StageStatus { PENDING, RUNNING, PASSED, FAILED, CLARIFICATION_REQUIRED, WAITING_FOR_HUMAN, SKIPPED, ROLLED_BACK, SAFE_STOPPED }

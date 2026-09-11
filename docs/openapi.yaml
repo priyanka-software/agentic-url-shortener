@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: Agentic URL Shortener API
+  version: 1.0.0
+  description: URL shortener APIs plus governed engineering workflow demonstration endpoints.
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/v1/urls:
+    post:
+      summary: Create a shortened URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url: { type: string, format: uri }
+                expiresInMinutes: { type: integer, minimum: 1 }
+      responses:
+        '200': { description: Short URL created }
+        '400': { description: Invalid URL or expiration }
+  /{code}:
+    get:
+      summary: Redirect an active short code
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema: { type: string }
+      responses:
+        '302': { description: Redirect to original URL }
+        '404': { description: Unknown short code }
+        '410': { description: Expired short code }
+  /api/v1/urls/{code}/analytics:
+    get:
+      summary: Read click analytics
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Analytics returned }
+  /api/v1/urls/{code}:
+    delete:
+      summary: Delete a short URL
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema: { type: string }
+      responses:
+        '204': { description: Deleted }
+  /api/v1/agentic/runs:
+    post:
+      summary: Start an engineering workflow run
+      description: Supports greenfield, brownfield and ambiguous scenarios. Test-failure flags exist only for controlled demonstration of retry/recovery behavior.
+      responses:
+        '200': { description: Workflow started }
+  /api/v1/agentic/runs/{runId}/clarify:
+    post:
+      summary: Supply missing acceptance criteria
+      responses:
+        '200': { description: Requirement clarified and dependent stages replanned }
+  /api/v1/agentic/runs/{runId}/approve-design:
+    post:
+      summary: Human design approval
+      responses:
+        '200': { description: Approved workflow continues }
+  /api/v1/agentic/runs/{runId}/approve-release:
+    post:
+      summary: Human release approval
+      responses:
+        '200': { description: Release approved and documentation stage completed }
+  /api/v1/agentic/runs/{runId}/replan:
+    post:
+      summary: Change an upstream requirement and recompute dependent work
+      responses:
+        '200': { description: Workflow replanned }
+  /api/v1/agentic/runs/{runId}/rollback:
+    post:
+      summary: Roll back implementation path to the design checkpoint
+      responses:
+        '200': { description: Workflow rolled back and renewed design approval required }

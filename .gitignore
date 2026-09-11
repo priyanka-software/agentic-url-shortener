@@ -1,0 +1,13 @@
+.gradle/
+build/
+out/
+.idea/
+*.iml
+
+# Local database files
+*.db
+*.mv.db
+*.trace.db
+
+# Local environment / secrets
+.env
